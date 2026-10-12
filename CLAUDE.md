@@ -4,9 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-No code has been written yet. The only source of truth is `FPL Companion PRD and System Design.md`. Read it before starting a feature. Update this file once real build, lint and test commands exist; until then, don't invent them.
+The NestJS scaffold is in place, but no feature modules exist yet. `FPL Companion PRD and System Design.md` is the source of truth. Read it before starting a feature.
 
 The PRD calls the repos `fpl-api` and `fpl-mobile`. On disk they are `fm-api` (this repo: the API and the worker) and `../fm-client` (the Expo app).
+
+## Commands
+
+Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
+
+- `npm run start:dev`: run the API with auto-reload
+- `npm run build`: compile TypeScript into `dist/`
+- `npm run lint`: lint with oxlint
+- `npm run format`: format with Prettier
+- `npm test`: unit tests (Vitest, `src/**/*.spec.ts`)
+- `npm run test:e2e`: end-to-end tests (`test/*.e2e-spec.ts`)
+- Run a single test file: `npx vitest run src/app.controller.spec.ts`
+
+## Working conventions
+
+The project owner is learning backend development through this build.
+
+- Before any change (installing a package, running a command that changes something, or writing a file), explain what it is and why it's needed, then wait for approval. Work in small steps. Approving one step doesn't approve the next.
+- Every feature or task gets a ticket first, in `docs/tickets/FM-XXX-short-name.md`, written like a Jira ticket from a lead to a mid-level engineer: summary, background, scope, acceptance criteria, technical notes, out of scope, and how to test. `FM-001-repo-cleanup.md` is the reference format. Write the ticket and get it approved before writing code.
 
 ## What this is
 
@@ -17,7 +36,7 @@ This is the backend for an FPL (Fantasy Premier League) companion. It produces p
 - TypeScript and NestJS: one codebase with two entry points, `src/main.ts` (the API) and `src/worker.ts` (scheduled jobs).
 - Postgres with Prisma (migrations live in this repo), and Redis with BullMQ for jobs and caching.
 - The Anthropic API with structured outputs, validated with Zod.
-- Jest or Vitest for unit tests, and Testcontainers for Postgres integration tests.
+- Vitest for unit tests, and Testcontainers for Postgres integration tests.
 - Docker Compose runs Postgres and Redis locally. A seed script loads a saved FPL snapshot, so local development never calls FPL.
 - The API deploys to Railway as Docker images in GHCR.
 
@@ -49,3 +68,13 @@ Breaking any of these is a correctness bug:
 NestJS generates `openapi.json`, and it must be committed whenever the API changes. CI checks that it matches the code. `fm-client` generates its typed client from this file, so an API change that isn't reflected in the spec breaks the client build.
 
 Big decisions get a short ADR in `docs/adr/`.
+
+## Open questions
+
+These aren't decided yet. Don't guess: ask, and record the answer as an ADR in `docs/adr/`.
+
+- **FPL ID verification (FR-02, FR-04).** Verifying the code and loading the squad both need an FPL call, but the API must never call FPL per request. Proposal: the API queues a BullMQ job, the worker calls FPL, and the client polls for the result.
+- **Missing tables.** The PRD's data model has nowhere to store a manager's picks, bank and rank, their gameweek points (needed for settlement), or idempotency keys. `users` has no auth columns.
+- **Auth.** Our own JWT and password hashing, or a hosted provider?
+- **Wager lifecycle.** The PRD mentions 6 states, but the diagram didn't export, so the states aren't defined.
+- **Ties.** `settlements.winner_id` must be nullable so a tie can refund both sides.
