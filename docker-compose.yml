@@ -1,0 +1,31 @@
+# Local development services. Start with: docker compose up -d
+
+services:
+  postgres:
+    image: postgres:17-alpine            # Postgres 17, small Alpine variant, downloaded from Docker Hub
+    environment:
+      POSTGRES_USER: fm                  # username created on first start
+      POSTGRES_PASSWORD: fm              # local-only password, never used in production
+      POSTGRES_DB: fm                    # database created on first start
+    ports:
+      - "127.0.0.1:5432:5432"            # your Mac's localhost:5432 → the container's port 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # keep the data in a named volume so it survives restarts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fm -d fm"]   # "are you ready to accept connections?"
+      interval: 5s                       # check every 5 seconds
+      timeout: 3s                        # count as failed if no answer in 3 seconds
+      retries: 10                        # mark unhealthy after 10 failures in a row
+
+  redis:
+    image: redis:7-alpine                # Redis 7, small Alpine variant
+    ports:
+      - "127.0.0.1:6380:6379"            # your Mac's localhost:6380 → the container's port 6379 (6379 is used by Homebrew Redis)
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"] # Redis answers PONG when it's alive
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:                                # declares the named volume used above
