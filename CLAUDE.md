@@ -19,6 +19,10 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `npm test`: unit tests (Vitest, `src/**/*.spec.ts`)
 - `npm run test:e2e`: end-to-end tests (`test/*.e2e-spec.ts`)
 - Run a single test file: `npx vitest run src/app.controller.spec.ts`
+- `docker compose up -d`: start Postgres (localhost:5432) and Redis (localhost:6380). Needs OrbStack running.
+- `docker compose ps`: check both services are `healthy`
+- `docker compose down`: stop them (data kept). `docker compose down -v` also wipes the database.
+- Copy `.env.example` to `.env` before running the app.
 
 ## Working conventions
 
