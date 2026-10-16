@@ -43,13 +43,13 @@ We start with `teams` (the 20 Premier League clubs) because it's the simplest FP
 8. **Update `CLAUDE.md`** with the new commands.
 
 ## Acceptance criteria
-- [ ] `npm run db:migrate` creates the `teams` table in the local Postgres.
-- [ ] `prisma/migrations/` contains the `init_teams` migration and it's committed.
-- [ ] `npm run db:studio` opens Prisma Studio and shows the empty `teams` table.
-- [ ] `npm run start:dev` starts the app and connects to Postgres with no errors.
-- [ ] Stopping Postgres (`docker compose down`) makes the app fail to start with a clear connection error, which proves it really connects.
-- [ ] `npm run lint`, `npm run build` and `npm test` pass.
-- [ ] `CLAUDE.md` lists the database commands.
+- [x] `npm run db:migrate` creates the `teams` table in the local Postgres.
+- [x] `prisma/migrations/` contains the `init_teams` migration and it's committed.
+- [x] `npm run db:studio` opens Prisma Studio and shows the empty `teams` table.
+- [x] `npm run start:dev` starts the app and connects to Postgres with no errors.
+- [x] Stopping Postgres (`docker compose down`) makes the app fail to start with a clear connection error, which proves it really connects.
+- [x] `npm run lint`, `npm run build` and `npm test` pass.
+- [x] `CLAUDE.md` lists the database commands.
 
 ## Technical notes
 - **Schema → migration → client:** you edit `schema.prisma`, `migrate dev` turns the change into SQL and applies it, and `generate` rebuilds the typed client. In Prisma 7, `migrate dev` no longer runs `generate`, so run both after every schema change: `npm run db:migrate`, then `npm run db:generate`.

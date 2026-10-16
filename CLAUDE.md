@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-The NestJS scaffold is in place, but no feature modules exist yet. `FPL Companion PRD and System Design.md` is the source of truth. Read it before starting a feature.
+The NestJS scaffold is in place, but no feature modules exist yet. `docs/FPL Companion PRD and System Design.md` is the source of truth. Read it before starting a feature.
 
 The PRD calls the repos `fpl-api` and `fpl-mobile`. On disk they are `fm-api` (this repo: the API and the worker) and `../fm-client` (the Expo app).
 

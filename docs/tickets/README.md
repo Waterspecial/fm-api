@@ -11,7 +11,7 @@ Goal: a verified user sees their real FPL squad within one minute of linking.
 | --- | --- | --- |
 | [FM-001](FM-001-repo-cleanup.md) | Repo cleanup after the NestJS scaffold | ✅ |
 | [FM-002](FM-002-docker-compose-postgres-redis.md) | Docker Compose: Postgres and Redis locally | ✅ |
-| FM-003 | Prisma: connect to Postgres, first migration | ⬜ |
+| [FM-003](FM-003-prisma-setup.md) | Prisma: connect to Postgres, first migration | ✅ |
 | FM-004 | Config and env validation: the app refuses to start with a bad `.env` | ⬜ |
 | FM-005 | CI: GitHub Actions runs lint, build and tests on every PR | ⬜ |
 | FM-006 | Save one real FPL snapshot as seed data | ⬜ |
