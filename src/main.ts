@@ -2,9 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
-
   try {
-    process.loadEnvFile()
+    process.loadEnvFile();
   } catch {
     // No .env file (e.g. in production). Variables come from the platform.
   }
