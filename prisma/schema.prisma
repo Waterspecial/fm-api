@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A Premier League club. Filled by the worker from FPL's bootstrap-static endpoint.
+model Team {
+  id        Int    @id @default(autoincrement())
+  /// FPL's permanent club code (Arsenal is always 3). Used to match clubs across seasons.
+  code      Int    @unique
+  /// FPL's id for this season (1-20). FPL renumbers it every season, so it isn't unique over time.
+  fplId     Int    @map("fpl_id")
+  name      String
+  shortName String @map("short_name")
+
+  strengthOverallHome Int  @map("strength_overall_home")
+  strengthOverallAway Int  @map("strength_overall_away")
+  /// FPL sometimes sends 0 for attack and defence, so these are optional.
+  strengthAttackHome  Int? @map("strength_attack_home")
+  strengthAttackAway  Int? @map("strength_attack_away")
+  strengthDefenceHome Int? @map("strength_defence_home")
+  strengthDefenceAway Int? @map("strength_defence_away")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("teams")
+}
