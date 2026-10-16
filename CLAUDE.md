@@ -22,6 +22,10 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `docker compose up -d`: start Postgres (localhost:5432) and Redis (localhost:6380). Needs OrbStack running.
 - `docker compose ps`: check both services are `healthy`
 - `docker compose down`: stop them (data kept). `docker compose down -v` also wipes the database.
+- `npm run db:migrate`: after a schema change, create a migration and apply it to the local database
+- `npm run db:generate`: then rebuild the typed Prisma client (Prisma 7 doesn't do this as part of `migrate`)
+- `npm run db:studio`: browse the local database in your browser
+- The app and the e2e tests need Postgres running (`docker compose up -d`). The app checks the connection at startup.
 - Copy `.env.example` to `.env` before running the app.
 
 ## Working conventions
@@ -80,5 +84,7 @@ These aren't decided yet. Don't guess: ask, and record the answer as an ADR in `
 - **FPL ID verification (FR-02, FR-04).** Verifying the code and loading the squad both need an FPL call, but the API must never call FPL per request. Proposal: the API queues a BullMQ job, the worker calls FPL, and the client polls for the result.
 - **Missing tables.** The PRD's data model has nowhere to store a manager's picks, bank and rank, their gameweek points (needed for settlement), or idempotency keys. `users` has no auth columns.
 - **Auth.** Our own JWT and password hashing, or a hosted provider?
-- **Wager lifecycle.** The PRD mentions 6 states, but the diagram didn't export, so the states aren't defined.
-- **Ties.** `settlements.winner_id` must be nullable so a tie can refund both sides.
+
+Answered:
+
+- **Wager lifecycle, scoring and ties.** See `docs/adr/0001-wager-rules.md`.

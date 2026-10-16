@@ -3,3 +3,6 @@ dist/
 coverage/
 .env
 *.tsbuildinfo
+
+/src/generated/prisma
+.claude/settings.local.json
