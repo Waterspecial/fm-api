@@ -5,7 +5,7 @@ async function bootstrap() {
 
   try {
     process.loadEnvFile()
-  } catch (error) {
+  } catch {
     // No .env file (e.g. in production). Variables come from the platform.
   }
   const app = await NestFactory.create(AppModule);
