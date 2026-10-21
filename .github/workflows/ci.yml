@@ -19,6 +19,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npx prisma gnerate
+
       - run: npm run format:check
 
       - run: npm run lint -- --deny-warnings
