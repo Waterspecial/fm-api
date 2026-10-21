@@ -19,7 +19,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npx prisma gnerate
+      - run: npx prisma generate
 
       - run: npm run format:check
 
