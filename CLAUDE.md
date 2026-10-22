@@ -16,6 +16,7 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `npm run build`: compile TypeScript into `dist/`
 - `npm run lint`: lint with oxlint
 - `npm run format`: format with Prettier
+- `npm run format:check`: check formatting without changing files (CI runs this)
 - `npm test`: unit tests (Vitest, `src/**/*.spec.ts`)
 - `npm run test:e2e`: end-to-end tests (`test/*.e2e-spec.ts`)
 - Run a single test file: `npx vitest run src/app.controller.spec.ts`
@@ -27,6 +28,10 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `npm run db:studio`: browse the local database in your browser
 - The app and the e2e tests need Postgres running (`docker compose up -d`). The app checks the connection at startup.
 - Copy `.env.example` to `.env` before running the app.
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and push to `main`: format check, lint (warnings fail), build, unit tests, `prisma migrate deploy` on an empty Postgres, then e2e tests. `main` is protected: merging needs a PR with a passing `check` job. Run the same commands locally before pushing.
 
 ## Working conventions
 
