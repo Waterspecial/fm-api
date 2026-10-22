@@ -44,14 +44,14 @@ The PRD ("CI/CD with GitHub Actions") lists the full PR pipeline. This ticket bu
 5. **Update `CLAUDE.md`:** add `npm run format:check`, and a line saying CI runs on every PR and what it checks.
 
 ## Acceptance criteria
-- [ ] `.github/workflows/ci.yml` exists and runs on this ticket's PR.
-- [ ] The run is green, and every step listed above appears in the log.
-- [ ] A deliberately broken commit turns it red (for example, a lint warning or a failing test). Revert it afterwards.
-- [ ] `prisma migrate deploy` applies `init_teams` to the empty CI database.
-- [ ] The e2e test passes in CI against the Postgres service container.
-- [ ] `main` is protected: merging needs a PR and a passing `check`.
-- [ ] `npm run format:check` exists and passes locally.
-- [ ] `CLAUDE.md` mentions CI and `format:check`.
+- [x] `.github/workflows/ci.yml` exists and runs on this ticket's PR.
+- [x] The run is green, and every step listed above appears in the log.
+- [x] A deliberately broken commit turns it red (for example, a lint warning or a failing test). Revert it afterwards.
+- [x] `prisma migrate deploy` applies `init_teams` to the empty CI database.
+- [x] The e2e test passes in CI against the Postgres service container.
+- [x] `main` is protected: merging needs a PR and a passing `check`.
+- [x] `npm run format:check` exists and passes locally.
+- [x] `CLAUDE.md` mentions CI and `format:check`.
 
 ## Technical notes
 - **Workflow, job, step:** a *workflow* is one YAML file. It has *jobs*, which run on a fresh virtual machine (a "runner") each time. A job is a list of *steps*, run in order. If any step fails, the job stops and goes red.
