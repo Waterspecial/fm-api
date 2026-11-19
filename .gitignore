@@ -6,3 +6,6 @@ coverage/
 
 /src/generated/prisma
 .claude/settings.local.json
+
+# Tickets are local planning notes, kept off GitHub
+docs/tickets/
