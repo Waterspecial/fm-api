@@ -25,6 +25,7 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `docker compose down`: stop them (data kept). `docker compose down -v` also wipes the database.
 - `npm run db:migrate`: after a schema change, create a migration and apply it to the local database
 - `npm run db:generate`: then rebuild the typed Prisma client (Prisma 7 doesn't do this as part of `migrate`)
+- `npm run db:seed`: load the saved FPL snapshot (`prisma/seed/fpl/`) into the local database. It's safe to run again. `prisma migrate reset` doesn't re-seed in Prisma 7, so run this after a reset.
 - `npm run db:studio`: browse the local database in your browser
 - The app and the e2e tests need Postgres running (`docker compose up -d`). The app checks the connection at startup.
 - Copy `.env.example` to `.env` before running the app.
@@ -38,7 +39,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and push to `main`:
 The project owner is learning backend development through this build.
 
 - Before any change (installing a package, running a command that changes something, or writing a file), explain what it is and why it's needed, then wait for approval. Work in small steps. Approving one step doesn't approve the next.
-- Every feature or task gets a ticket first, in `docs/tickets/FM-XXX-short-name.md`, written like a Jira ticket from a lead to a mid-level engineer: summary, background, scope, acceptance criteria, technical notes, out of scope, and how to test. `FM-001-repo-cleanup.md` is the reference format. Write the ticket and get it approved before writing code.
+- Every feature or task gets a ticket first, in `docs/tickets/FM-XXX-short-name.md` (gitignored, local only), written like a Jira ticket from a lead to a mid-level engineer: summary, background, scope, acceptance criteria, technical notes, out of scope, and how to test. `FM-001-repo-cleanup.md` is the reference format. Write the ticket and get it approved before writing code.
 
 ## What this is
 
