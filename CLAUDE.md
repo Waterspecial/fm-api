@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-The NestJS scaffold is in place, but no feature modules exist yet. `docs/FPL Companion PRD and System Design.md` is the source of truth. Read it before starting a feature.
+The NestJS scaffold is in place. Feature modules so far: `fpl` (FPL client, snapshots, sync). `docs/FPL Companion PRD and System Design.md` is the source of truth. Read it before starting a feature.
 
 The PRD calls the repos `fpl-api` and `fpl-mobile`. On disk they are `fm-api` (this repo: the API and the worker) and `../fm-client` (the Expo app).
 
@@ -26,6 +26,7 @@ Node 24 is pinned in `.nvmrc`. Run `nvm use` first.
 - `npm run db:migrate`: after a schema change, create a migration and apply it to the local database
 - `npm run db:generate`: then rebuild the typed Prisma client (Prisma 7 doesn't do this as part of `migrate`)
 - `npm run db:seed`: load the saved FPL snapshot (`prisma/seed/fpl/`) into the local database. It's safe to run again. `prisma migrate reset` doesn't re-seed in Prisma 7, so run this after a reset.
+- `npm run fpl:sync`: pull live data from FPL (`FPL_BASE_URL`) into the local database once, saving the raw responses in `gameweek_snapshots` first. It's the only command that calls FPL, and it's safe to run again.
 - `npm run db:studio`: browse the local database in your browser
 - The app and the e2e tests need Postgres running (`docker compose up -d`). The app checks the connection at startup.
 - Copy `.env.example` to `.env` before running the app.
