@@ -1,0 +1,124 @@
+/// A Premier League club. Filled by the worker from FPL's bootstrap-static endpoint.
+model Team {
+  id        Int    @id @default(autoincrement())
+  code      Int    @unique
+  fplId     Int    @map("fpl_id")
+  name      String
+  shortName String @map("short_name")
+
+  strengthOverallHome Int  @map("strength_overall_home")
+  strengthOverallAway Int  @map("strength_overall_away")
+  /// FPL sometimes sends 0 for attack and defence, so these are optional.
+  strengthAttackHome  Int? @map("strength_attack_home")
+  strengthAttackAway  Int? @map("strength_attack_away")
+  strengthDefenceHome Int? @map("strength_defence_home")
+  strengthDefenceAway Int? @map("strength_defence_away")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  players      Player[]
+  homeFixtures Fixture[] @relation("HomeTeam")
+  awayFixtures Fixture[] @relation("AwayTeam")
+
+  @@map("teams")
+}
+
+/// One gameweek of a season. Filled by the worker from FPL's bootstrap-static `events`.
+model Gameweek {
+  id       Int      @id @default(autoincrement())
+  season   String
+  /// 1-38. FPL's event id.
+  number   Int
+  deadline DateTime
+
+  isCurrent   Boolean @map("is_current")
+  isNext      Boolean @map("is_next")
+  finished    Boolean
+  /// True once FPL has confirmed bonus points. Settlement runs only after this.
+  dataChecked Boolean @map("data_checked")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  fixtures Fixture[]
+
+  @@unique([season, number])
+  @@map("gameweeks")
+}
+
+/// FPL's four positions. `element_type` 1-4 in FPL's data.
+enum Position {
+  GKP
+  DEF
+  MID
+  FWD
+}
+
+/// A Premier League player. Filled by the worker from FPL's bootstrap-static `elements`.
+model Player {
+  id       Int      @id @default(autoincrement())
+  /// FPL's permanent player code. Used to match players across seasons.
+  code     Int      @unique
+  /// FPL's id for this season. Live points and picks refer to players by this id.
+  fplId    Int      @map("fpl_id")
+  webName  String   @map("web_name")
+  position Position
+
+  teamId Int  @map("team_id")
+  team   Team @relation(fields: [teamId], references: [id])
+
+  /// In tenths: 61 means £6.1m.
+  price  Int
+  /// a = available, d = doubtful, i = injured, s = suspended, u = unavailable, n = not available.
+  /// A string, not an enum, because FPL has added new codes before.
+  status String
+  news   String
+  /// 0-100, or null when there's no doubt about the player.
+  chanceOfPlayingNextRound Int? @map("chance_of_playing_next_round")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([teamId])
+  @@map("players")
+}
+
+/// One Premier League match. Filled by the worker from FPL's fixtures endpoint.
+model Fixture {
+  id    Int @id @default(autoincrement())
+  /// FPL's permanent fixture code. Used to match fixtures across syncs.
+  code  Int @unique
+  /// FPL's id for this season.
+  fplId Int @map("fpl_id")
+
+  /// Null when the match is postponed and not yet rescheduled.
+  gameweekId Int?      @map("gameweek_id")
+  gameweek   Gameweek? @relation(fields: [gameweekId], references: [id])
+
+  homeTeamId Int  @map("home_team_id")
+  homeTeam   Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId Int  @map("away_team_id")
+  awayTeam   Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  /// Null until FPL schedules the kick-off.
+  kickoff DateTime?
+
+  /// FPL's fixture difficulty rating, 1 (easy) to 5 (hard), for each side.
+  homeDifficulty Int @map("home_difficulty")
+  awayDifficulty Int @map("away_difficulty")
+
+  /// Null until the match starts.
+  homeScore Int? @map("home_score")
+  awayScore Int? @map("away_score")
+  started   Boolean
+  finished  Boolean
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([gameweekId])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+  @@map("fixtures")
+}
