@@ -16,6 +16,11 @@ const envSchema = z.object({
   REDIS_URL: z
     .string({ error: 'is required' })
     .regex(/^redis:\/\//, 'must start with redis://'),
+  // Must end with "/" so paths like "fixtures/" are added after "api/".
+  FPL_BASE_URL: z
+    .url({ error: 'must be a URL' })
+    .endsWith('/', 'must end with /')
+    .default('https://fantasy.premierleague.com/api/'),
 });
 
 export type Env = z.infer<typeof envSchema>;

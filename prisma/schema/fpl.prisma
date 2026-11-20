@@ -41,7 +41,8 @@ model Gameweek {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  fixtures Fixture[]
+  fixtures  Fixture[]
+  snapshots GameweekSnapshot[]
 
   @@unique([season, number])
   @@map("gameweeks")
@@ -121,4 +122,27 @@ model Fixture {
   @@index([homeTeamId])
   @@index([awayTeamId])
   @@map("fixtures")
+}
+
+/// Which FPL endpoint a snapshot came from.
+enum SnapshotSource {
+  BOOTSTRAP_STATIC
+  FIXTURES
+}
+
+/// A raw FPL response, stored untouched before it's validated and normalised.
+/// Used for debugging when FPL changes shape, and for re-checking wager disputes.
+model GameweekSnapshot {
+  id         Int            @id @default(autoincrement())
+  source     SnapshotSource
+  /// The current gameweek when the snapshot was taken. Null before GW1 starts.
+  gameweekId Int?           @map("gameweek_id")
+  gameweek   Gameweek?      @relation(fields: [gameweekId], references: [id])
+  /// FPL's response exactly as it arrived.
+  payload    Json
+  takenAt    DateTime       @default(now()) @map("taken_at")
+
+  @@index([source, takenAt])
+  @@index([gameweekId])
+  @@map("gameweek_snapshots")
 }
